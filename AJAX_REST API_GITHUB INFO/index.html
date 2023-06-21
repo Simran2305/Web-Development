@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GitHub API Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    h2 {
+      color: #666;
+      margin-top: 40px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .error {
+      color: #FF0000;
+      margin-top: 10px;
+    }
+  </style>
+  <script>
+    function getUsers() {
+      var xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            var users = JSON.parse(xhr.responseText);
+            displayUsers(users);
+          } else {
+            displayError();
+          }
+        }
+      };
+
+      xhr.open("GET", "https://api.github.com/users", true);
+      xhr.send();
+    }
+
+    function getUserRepositories() {
+      var username = document.getElementById("username").value;
+      var xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            var repositories = JSON.parse(xhr.responseText);
+            displayRepositories(repositories);
+          } else {
+            displayError();
+          }
+        }
+      };
+
+      xhr.open("GET", "https://api.github.com/users/" + username + "/repos", true);
+      xhr.send();
+    }
+
+    function displayUsers(users) {
+      var userList = document.getElementById("userList");
+      userList.innerHTML = ""; // Clear previous results
+
+      for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+        var listItem = document.createElement("li");
+        listItem.innerHTML = user.login;
+        userList.appendChild(listItem);
+      }
+    }
+
+    function displayRepositories(repositories) {
+      var repositoryList = document.getElementById("repositoryList");
+      repositoryList.innerHTML = ""; // Clear previous results
+
+      if (repositories.length === 0) {
+        var listItem = document.createElement("li");
+        listItem.innerHTML = "No repositories found.";
+        repositoryList.appendChild(listItem);
+      } else {
+        for (var i = 0; i < repositories.length; i++) {
+          var repository = repositories[i];
+          var listItem = document.createElement("li");
+          listItem.innerHTML = repository.name;
+          repositoryList.appendChild(listItem);
+        }
+      }
+    }
+
+    function displayError() {
+      var errorContainer = document.getElementById("errorContainer");
+      errorContainer.innerHTML = "Error occurred. Please try again.";
+    }
+  </script>
+</head>
+<body>
+  <h1>GitHub API Viewer</h1>
+
+  <h2>Print Users</h2>
+  <button onclick="getUsers()">Get Users</button>
+  <ul id="userList"></ul>
+
+  <h2>Print Repository Names</h2>
+  <input type="text" id="username" placeholder="Enter username">
+  <button onclick="getUserRepositories()">Get Repositories</button>
+  <ul id="repositoryList"></ul>
+
+  <div id="errorContainer" class="error"></div>
+</body>
+</html>
