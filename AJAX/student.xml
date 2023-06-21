@@ -1,0 +1,14 @@
+<students>
+  <student id="1">
+    <name>John Doe</name>
+    <age>20</age>
+  </student>
+  <student id="2">
+    <name>Jane Smith</name>
+    <age>22</age>
+  </student>
+  <student id="3">
+    <name>Mike Johnson</name>
+    <age>19</age>
+  </student>
+</students>

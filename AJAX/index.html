@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student XML Viewer</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+  <script>
+    function loadStudentData() {
+      var xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var xmlDoc = xhr.responseXML;
+          displayStudentData(xmlDoc);
+        }
+      };
+
+      xhr.open("GET", "student.xml", true);
+      xhr.send();
+    }
+
+    function displayStudentData(xmlDoc) {
+      var table = document.createElement("table");
+      var students = xmlDoc.getElementsByTagName("student");
+
+      var headerRow = document.createElement("tr");
+
+      var idHeader = document.createElement("th");
+      idHeader.innerHTML = "ID";
+      headerRow.appendChild(idHeader);
+
+      var nameHeader = document.createElement("th");
+      nameHeader.innerHTML = "Name";
+      headerRow.appendChild(nameHeader);
+
+      var ageHeader = document.createElement("th");
+      ageHeader.innerHTML = "Age";
+      headerRow.appendChild(ageHeader);
+
+      table.appendChild(headerRow);
+
+      for (var i = 0; i < students.length; i++) {
+        var student = students[i];
+        var row = document.createElement("tr");
+
+        var idCell = document.createElement("td");
+        idCell.innerHTML = student.getAttribute("id");
+        row.appendChild(idCell);
+
+        var nameCell = document.createElement("td");
+        nameCell.innerHTML = student.getElementsByTagName("name")[0].textContent;
+        row.appendChild(nameCell);
+
+        var ageCell = document.createElement("td");
+        ageCell.innerHTML = student.getElementsByTagName("age")[0].textContent;
+        row.appendChild(ageCell);
+
+        table.appendChild(row);
+      }
+
+      document.getElementById("studentTable").appendChild(table);
+    }
+  </script>
+</head>
+<body onload="loadStudentData()">
+  <h1>Student XML Viewer</h1>
+  <div id="studentTable"></div>
+</body>
+</html>
